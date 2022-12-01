@@ -1,15 +1,10 @@
-import './App.css';
+import { useRoutes } from "react-router-dom";
+import Themeroutes from "./routes/Router";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Welcome to pylumber
-        </p>
-      </header>
-    </div>
-  );
-}
+const App = () => {
+  const routing = useRoutes(Themeroutes);
+
+  return <div className="dark">{routing}</div>;
+};
 
 export default App;
