@@ -1,13 +1,12 @@
 import { Card, CardBody, CardTitle, CardSubtitle, Table } from "reactstrap";
-import user1 from "../../assets/images/users/user1.jpg";
-import user2 from "../../assets/images/users/user2.jpg";
-import user3 from "../../assets/images/users/user3.jpg";
-import user4 from "../../assets/images/users/user4.jpg";
-import user5 from "../../assets/images/users/user5.jpg";
+import bauhaus from "../../assets/images/companies/bauhaus.jpg";
+import byggmax from "../../assets/images/companies/byggmax.jpg";
+import optimera from "../../assets/images/companies/optimera.jpg";
+import woody from "../../assets/images/companies/woody.jpg";
 
 const tableData = [
   {
-    avatar: user1,
+    avatar: bauhaus,
     product: "K-plyfa 18mm",
     group: "K-plyfa",
     price: "819.23 kr",
@@ -15,7 +14,7 @@ const tableData = [
     priceChanged: "-160.00 kr (-16.3%)",
   },
   {
-    avatar: user2,
+    avatar: byggmax,
     product: "Plywood klass 2/3, 800x1200x6",
     group: "Plywood",
     price: "129.74 kr",
@@ -23,7 +22,7 @@ const tableData = [
     priceChanged: "+40.00 kr (16.7%)",
   },
   {
-    avatar: user3,
+    avatar: optimera,
     product: "Råpl 22x170",
     group: "Råpl",
     price: "29.45 kr",
@@ -31,7 +30,7 @@ const tableData = [
     priceChanged: "-2.58 kr (-8.0%)",
   },
   {
-    avatar: user4,
+    avatar: woody,
     product: "Regel 45x95",
     group: "Regel",
     price: "965.23 kr",
@@ -39,7 +38,7 @@ const tableData = [
     priceChanged: "-5.90 kr (-11.0%)",
   },
   {
-    avatar: user5,
+    avatar: woody,
     product: "Regel 45x70",
     group: "Regel",
     price: "1032.23 kr",

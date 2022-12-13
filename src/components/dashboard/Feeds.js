@@ -1,60 +1,75 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardBody,
   CardTitle,
   ListGroup,
   CardSubtitle,
-  ListGroupItem,
-  Button,
+  ListGroupItem
 } from "reactstrap";
-
-const FeedData = [
-  {
-    title: "Plywood klass 2/3, 800x1200x6",
-    icon: "bi bi-arrow-down",
-    color: "success",
-    priceChange: "-150.00 kr (-10.4%)",
-  },
-  {
-    title: "Plyfa 7mm",
-    icon: "bi bi-arrow-up",
-    color: "danger",
-    priceChange: "+80.00 kr (21.7%)",
-  },
-  {
-    title: "New user registered.",
-    icon: "bi bi-person",
-    color: "info",
-    priceChange: "6 minute ago",
-  },
-  {
-    title: "Server #1 overloaded.",
-    icon: "bi bi-hdd",
-    color: "danger",
-    priceChange: "6 minute ago",
-  },
-  {
-    title: "New order received.",
-    icon: "bi bi-bag-check",
-    color: "success",
-    priceChange: "6 minute ago",
-  },
-  {
-    title: "Cras justo odio",
-    icon: "bi bi-bell",
-    color: "dark",
-    priceChange: "6 minute ago",
-  },
-  {
-    title: "Server #1 overloaded.",
-    icon: "bi bi-hdd",
-    color: "warning",
-    priceChange: "6 minute ago",
-  },
-];
+import bauhaus from "../../assets/images/companies/bauhaus.jpg";
+import byggmax from "../../assets/images/companies/byggmax.jpg";
+import optimera from "../../assets/images/companies/optimera.jpg";
+import woody from "../../assets/images/companies/woody.jpg";
 
 const Feeds = () => {
+  const [error, setError] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [data, setData] = useState([]);
+
+  const storeMapping = {
+    "bauhaus": bauhaus,
+    "byggmax": byggmax,
+    "optimera": optimera,
+    "woody": woody,
+  }
+
+  function formatPriceChange(price_change) {
+    var res = price_change["change_sek"].toFixed(2) + " kr (" +price_change["change_percent"].toFixed(2) +"%)"
+    if (price_change["change_sek"] > 0 ) {
+      return "+" + res
+    }
+    return res
+  }
+
+  function priceChangeColor(change_sek) {
+    return change_sek < 0 ? 'green' : 'red';
+  }
+
+  useEffect(() => {
+    const days = 86400000 //number of milliseconds in a day
+    const sixDaysAgo = new Date(new Date() - (6 * days)).toISOString().substring(0, 10)
+
+    fetch("http://pylumber.olssonjarl.se/old-site/api/products?price_changed_after=" +sixDaysAgo)
+      .then(res => res.json())
+      .then(
+        (data) => {
+          console.log(data);
+          const products = data["products"].map(p => ({
+            "store": p["store"],
+            "title": p["product_name"],
+            "priceChangeSEK": p["price_change"]["change_sek"],
+            "priceChangeStr": formatPriceChange(p["price_change"]),
+            "date": p["price_change"]["date"]
+          }));
+          setData(products);
+          setIsLoaded(true);
+        },
+        (error) => {
+          setIsLoaded(false);
+          setError(true);
+        }
+      )
+  }, [])
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  if (!isLoaded) {
+    return <div>Loading....</div>;
+  }
+
   return (
     <Card>
       <CardBody>
@@ -63,7 +78,7 @@ const Feeds = () => {
           Products with prices changed the last 5 days.
         </CardSubtitle>
         <ListGroup flush className="mt-4">
-          {FeedData.map((feed, index) => (
+          {data.map((feed, index) => (
             <ListGroupItem
               key={index}
               action
@@ -71,16 +86,19 @@ const Feeds = () => {
               tag="a"
               className="d-flex align-items-center p-3 border-0"
             >
-              <Button
-                className="rounded-circle me-3"
-                size="sm"
-                color={feed.color}
-              >
-                <i className={feed.icon}></i>
-              </Button>
-              {feed.title}
+              <img
+                src={storeMapping[feed.store]}
+                className="rounded-circle"
+                alt="avatar"
+                width="30"
+                height="30"
+              />
+              <div className="ms-1">
+                {feed.title}
+              </div>
               <small className="ms-auto text-muted text-small">
-                {feed.priceChange}
+                <div style={{color: priceChangeColor(feed.priceChangeSEK) }}>{feed.priceChangeStr}</div>
+                {feed.date}
               </small>
             </ListGroupItem>
           ))}
