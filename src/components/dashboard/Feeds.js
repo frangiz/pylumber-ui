@@ -57,27 +57,18 @@ const Feeds = () => {
         },
         (error) => {
           setIsLoaded(false);
-          setError(true);
+          setError(error);
         }
       )
   }, [])
 
+  let content;
   if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-
-  if (!isLoaded) {
-    return <div>Loading....</div>;
-  }
-
-  return (
-    <Card>
-      <CardBody>
-        <CardTitle tag="h5">Recent price changes</CardTitle>
-        <CardSubtitle className="mb-2 text-muted" tag="h6">
-          Products with prices changed the last 5 days.
-        </CardSubtitle>
-        <ListGroup flush className="mt-4">
+    content = <div>Error: {error.message}</div>;
+  } else if (!isLoaded) {
+    content = <div>Loading....</div>;
+  } else if (data.length > 0) {
+    content = <ListGroup flush className="mt-4">
           {data.map((feed, index) => (
             <ListGroupItem
               key={index}
@@ -102,7 +93,19 @@ const Feeds = () => {
               </small>
             </ListGroupItem>
           ))}
-        </ListGroup>
+        </ListGroup>;
+  } else {
+    content = <div>No products have changed.</div>;
+  }
+
+  return (
+    <Card>
+      <CardBody>
+        <CardTitle tag="h5">Recent price changes</CardTitle>
+        <CardSubtitle className="mb-2 text-muted" tag="h6">
+          Products with prices changed the last 5 days.
+        </CardSubtitle>
+        {content}
       </CardBody>
     </Card>
   );
