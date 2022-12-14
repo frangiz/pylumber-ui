@@ -16,7 +16,6 @@ const Feeds = () => {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [data, setData] = useState([]);
-  const [sixDaysAgo, setSixDaysAgo] = useState("");
 
   const storeMapping = {
     "bauhaus": bauhaus,
@@ -24,6 +23,9 @@ const Feeds = () => {
     "optimera": optimera,
     "woody": woody,
   }
+
+  const days = 86400000 //number of milliseconds in a day
+  const sixDaysAgo = new Date(new Date() - (6 * days)).toISOString().substring(0, 10)
 
   function formatPriceChange(price_change) {
     var res = price_change["change_sek"].toFixed(2) + " kr (" +price_change["change_percent"].toFixed(2) +"%)"
@@ -37,10 +39,7 @@ const Feeds = () => {
     return change_sek < 0 ? 'green' : 'red';
   }
 
-  useEffect((sixDaysAgo) => {
-    const days = 86400000 //number of milliseconds in a day
-    setSixDaysAgo(new Date(new Date() - (6 * days)).toISOString().substring(0, 10))
-
+  useEffect(() => {
     fetch("http://pylumber.olssonjarl.se/old-site/api/products?price_changed_after=" +sixDaysAgo)
       .then(res => res.json())
       .then(
@@ -61,7 +60,7 @@ const Feeds = () => {
           setError(error);
         }
       )
-  }, [])
+  }, [sixDaysAgo])
 
   let content;
   if (error) {
