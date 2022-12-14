@@ -16,6 +16,7 @@ const Feeds = () => {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [data, setData] = useState([]);
+  const [sixDaysAgo, setSixDaysAgo] = useState("");
 
   const storeMapping = {
     "bauhaus": bauhaus,
@@ -36,9 +37,9 @@ const Feeds = () => {
     return change_sek < 0 ? 'green' : 'red';
   }
 
-  useEffect(() => {
+  useEffect((sixDaysAgo) => {
     const days = 86400000 //number of milliseconds in a day
-    const sixDaysAgo = new Date(new Date() - (6 * days)).toISOString().substring(0, 10)
+    setSixDaysAgo(new Date(new Date() - (6 * days)).toISOString().substring(0, 10))
 
     fetch("http://pylumber.olssonjarl.se/old-site/api/products?price_changed_after=" +sixDaysAgo)
       .then(res => res.json())
@@ -95,7 +96,7 @@ const Feeds = () => {
           ))}
         </ListGroup>;
   } else {
-    content = <div>No products have changed.</div>;
+    content = <div>No products have changed after {sixDaysAgo}.</div>;
   }
 
   return (
