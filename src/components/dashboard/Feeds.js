@@ -68,32 +68,33 @@ const Feeds = () => {
   } else if (!isLoaded) {
     content = <div>Loading....</div>;
   } else if (data.length > 0) {
-    content = <ListGroup flush className="mt-4">
-          {data.map((feed, index) => (
-            <ListGroupItem
-              key={index}
-              action
-              href="/"
-              tag="a"
-              className="d-flex align-items-center p-3 border-0"
-            >
-              <img
-                src={storeMapping[feed.store]}
-                className="rounded-circle"
-                alt="avatar"
-                width="30"
-                height="30"
-              />
-              <div className="ms-1">
-                {feed.title}
-              </div>
-              <small className="ms-auto text-muted text-small">
-                <div style={{color: priceChangeColor(feed.priceChangeSEK) }}>{feed.priceChangeStr}</div>
-                {feed.date}
-              </small>
-            </ListGroupItem>
-          ))}
-        </ListGroup>;
+    content = 
+      <ListGroup flush className="mt-4">
+        {data.map((feed, index) => (
+          <ListGroupItem
+            key={index}
+            action
+            href="/"
+            tag="a"
+            className="d-flex align-items-center p-3 border-0"
+          >
+            <img
+              src={storeMapping[feed.store]}
+              className="rounded-circle"
+              alt="avatar"
+              width="30"
+              height="30"
+            />
+            <div className="ms-1">
+              {feed.title}
+            </div>
+            <small className="ms-auto text-muted text-small">
+              <div style={{color: priceChangeColor(feed.priceChangeSEK) }}>{feed.priceChangeStr}</div>
+              {feed.date}
+            </small>
+          </ListGroupItem>
+        ))}
+      </ListGroup>;
   } else {
     content = <div>No products have changed after {sixDaysAgo}.</div>;
   }
