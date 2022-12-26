@@ -4,6 +4,7 @@ import bauhaus from "../../assets/images/companies/bauhaus.jpg";
 import byggmax from "../../assets/images/companies/byggmax.jpg";
 import optimera from "../../assets/images/companies/optimera.jpg";
 import woody from "../../assets/images/companies/woody.jpg";
+import { formatPriceChange, priceChangeColor } from "../../currencyFormatters";
 
 const ProjectTables = () => {
   const [error, setError] = useState(null);
@@ -15,18 +16,6 @@ const ProjectTables = () => {
     "byggmax": byggmax,
     "optimera": optimera,
     "woody": woody,
-  }
-
-  function formatPriceChange(price_change) {
-    var res = price_change["change_sek"].toFixed(2) + " kr (" +price_change["change_percent"].toFixed(1) +"%)"
-    if (price_change["change_sek"] > 0 ) {
-      return "+" + res
-    }
-    return res
-  }
-
-  function priceChangeColor(change_sek) {
-    return change_sek < 0 ? 'green' : 'red';
   }
 
   useEffect(() => {
@@ -42,7 +31,7 @@ const ProjectTables = () => {
             "price": p["current_price"],
             "date": p["price_change"]["date"],
             "priceChangeSEK": p["price_change"]["change_sek"],
-            "priceChanged": formatPriceChange(p["price_change"])
+            "priceChanged": formatPriceChange(p["price_change"]["change_sek"], p["price_change"]["change_percent"])
           }));
           setData(products);
           setIsLoaded(true);

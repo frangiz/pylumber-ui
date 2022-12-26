@@ -11,6 +11,7 @@ import bauhaus from "../../assets/images/companies/bauhaus.jpg";
 import byggmax from "../../assets/images/companies/byggmax.jpg";
 import optimera from "../../assets/images/companies/optimera.jpg";
 import woody from "../../assets/images/companies/woody.jpg";
+import { formatPriceChange, priceChangeColor } from "../../currencyFormatters";
 
 const Feeds = () => {
   const [error, setError] = useState(null);
@@ -27,18 +28,6 @@ const Feeds = () => {
   const days = 86400000 //number of milliseconds in a day
   const sixDaysAgo = new Date(new Date() - (6 * days)).toISOString().substring(0, 10)
 
-  function formatPriceChange(price_change) {
-    var res = price_change["change_sek"].toFixed(2) + " kr (" +price_change["change_percent"].toFixed(2) +"%)"
-    if (price_change["change_sek"] > 0 ) {
-      return "+" + res
-    }
-    return res
-  }
-
-  function priceChangeColor(change_sek) {
-    return change_sek < 0 ? 'green' : 'red';
-  }
-
   useEffect(() => {
     fetch("http://pylumber.olssonjarl.se/old-site/api/products?price_changed_after=" +sixDaysAgo)
       .then(res => res.json())
@@ -49,7 +38,7 @@ const Feeds = () => {
             "store": p["store"],
             "title": p["product_name"],
             "priceChangeSEK": p["price_change"]["change_sek"],
-            "priceChangeStr": formatPriceChange(p["price_change"]),
+            "priceChangeStr": formatPriceChange(p["price_change"]["change_sek"], p["price_change"]["change_percent"]),
             "date": p["price_change"]["date"]
           }));
           setData(products);
