@@ -29,7 +29,7 @@ const Feeds = () => {
   const sixDaysAgo = new Date(new Date() - (6 * days)).toISOString().substring(0, 10)
 
   useEffect(() => {
-    fetch("http://pylumber.olssonjarl.se/old-site/api/products?price_changed_after=" +sixDaysAgo)
+    fetch("http://localhost:5000/api/products?price_changed_after=" +sixDaysAgo)
       .then(res => res.json())
       .then(
         (data) => {
@@ -39,7 +39,8 @@ const Feeds = () => {
             "title": p["product_name"],
             "priceChangeSEK": p["price_change"]["change_sek"],
             "priceChangeStr": formatPriceChange(p["price_change"]["change_sek"], p["price_change"]["change_percent"]),
-            "date": p["price_change"]["date"]
+            "date": p["price_change"]["date"],
+            "url": p["url"]
           }));
           setData(products);
           setIsLoaded(true);
@@ -59,27 +60,27 @@ const Feeds = () => {
   } else if (data.length > 0) {
     content = 
       <ListGroup flush className="mt-4">
-        {data.map((feed, index) => (
+        {data.map((product, index) => (
           <ListGroupItem
             key={index}
             action
-            href="/"
+            href={product.url}
             tag="a"
             className="d-flex align-items-center p-3 border-0"
           >
             <img
-              src={storeMapping[feed.store]}
+              src={storeMapping[product.store]}
               className="rounded-circle"
               alt="avatar"
               width="30"
               height="30"
             />
             <div className="ms-1">
-              {feed.title}
+              {product.title}
             </div>
             <small className="ms-auto text-muted text-small">
-              <div style={{color: priceChangeColor(feed.priceChangeSEK) }}>{feed.priceChangeStr}</div>
-              {feed.date}
+              <div style={{color: priceChangeColor(product.priceChangeSEK) }}>{product.priceChangeStr}</div>
+              {product.date}
             </small>
           </ListGroupItem>
         ))}
