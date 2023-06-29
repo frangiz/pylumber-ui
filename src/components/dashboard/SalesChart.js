@@ -1,7 +1,32 @@
+import React, { useState, useEffect } from "react";
 import { Card, CardBody, CardSubtitle, CardTitle } from "reactstrap";
 import Chart from "react-apexcharts";
 
 const SalesChart = () => {
+  const [error, setError] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetch("http://pylumber.olssonjarl.se/old-site/api/groups/price-trends")
+      .then(res => res.json())
+      .then(
+        (data) => {
+          console.log(data);
+          const products = data["groups"].map(g => ({
+            "name": g["group_name"],
+            "data": g["price_trends"].map(pt => ({x: pt["date"], y: pt["price"]}))
+          }));
+          setData(products);
+          setIsLoaded(true);
+        },
+        (error) => {
+          setIsLoaded(false);
+          setError(error);
+        }
+      )
+  }, [])
+
   const options = {
     chart: {
       toolbar: {
@@ -28,19 +53,6 @@ const SalesChart = () => {
       },
     },
     colors: ["#0d6efd", "#009efb", "#6771dc"],
-    xaxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-      ],
-    },
     responsive: [
       {
         breakpoint: 1024,
@@ -55,17 +67,15 @@ const SalesChart = () => {
       },
     ],
   };
-  const series = [
-    {
-      name: "2020",
-      data: [20, 40, 50, 30, 40, 50, 30, 30, 40],
-    },
-    {
-      name: "2022",
-      data: [10, 20, 40, 60, 20, 40, 60, 60, 20],
-    },
-  ];
 
+  let content;
+  if (error) {
+    content = <div>Error: {error.message}</div>;
+  } else if (!isLoaded) {
+    content = <div>Loading....</div>;
+  } else {
+    content = <Chart options={options} series={data} type="bar" height="379" />;
+  }
   return (
     <Card>
       <CardBody>
@@ -73,7 +83,7 @@ const SalesChart = () => {
         <CardSubtitle className="text-muted" tag="h6">
           Yearly Sales Report
         </CardSubtitle>
-        <Chart options={options} series={series} type="bar" height="379" />
+        {content}
       </CardBody>
     </Card>
   );
