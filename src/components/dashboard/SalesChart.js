@@ -8,7 +8,7 @@ const SalesChart = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch("http://pylumber.olssonjarl.se/old-site/api/groups/price-trends")
+    fetch("/api/groups/price-trends")
       .then(res => res.json())
       .then(
         (data) => {

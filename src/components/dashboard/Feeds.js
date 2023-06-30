@@ -29,7 +29,7 @@ const Feeds = () => {
   const sixDaysAgo = new Date(new Date() - (6 * days)).toISOString().substring(0, 10)
 
   useEffect(() => {
-    fetch("http://pylumber.olssonjarl.se/old-site/api/products?price_changed_after=" +sixDaysAgo)
+    fetch("/api/products?price_changed_after=" +sixDaysAgo)
       .then(res => res.json())
       .then(
         (data) => {

@@ -19,7 +19,7 @@ const ProjectTables = () => {
   }
 
   useEffect(() => {
-    fetch("http://pylumber.olssonjarl.se/old-site/api/products?price_changed_after=1970-01-01")
+    fetch("/api/products?price_changed_after=1970-01-01")
       .then(res => res.json())
       .then(
         (data) => {
