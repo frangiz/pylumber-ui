@@ -15,7 +15,7 @@ const SalesChart = () => {
           console.log(data);
           const products = data["groups"].map(g => ({
             "name": g["group_name"],
-            "data": g["price_trends"].map(pt => ({x: pt["date"], y: pt["price"]}))
+            "data": g["price_trends"].map(pt => ({ x: pt["date"], y: pt["price"] }))
           }));
           setData(products);
           setIsLoaded(true);
@@ -32,27 +32,24 @@ const SalesChart = () => {
       toolbar: {
         show: false,
       },
-      stacked: false,
     },
     dataLabels: {
       enabled: false,
     },
     stroke: {
-      show: true,
-      width: 4,
-      colors: ["transparent"],
+      curve: 'straight',
+      width: 2,
     },
     legend: {
       show: true,
     },
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        columnWidth: "30%",
-        borderRadius: 2,
-      },
+    yaxis: {
+      labels: {
+        formatter: function(value) {
+          return value.toFixed(0);
+        }
+      }
     },
-    colors: ["#0d6efd", "#009efb", "#6771dc"],
     responsive: [
       {
         breakpoint: 1024,
@@ -74,7 +71,7 @@ const SalesChart = () => {
   } else if (!isLoaded) {
     content = <div>Loading....</div>;
   } else {
-    content = <Chart options={options} series={data} type="bar" height="379" />;
+    content = <Chart options={options} series={data} type="line" height="379" />;
   }
   return (
     <Card>
